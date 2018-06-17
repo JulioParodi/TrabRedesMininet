@@ -37,7 +37,7 @@ def help():
     print "use command line:"
     print "sudo python Topology.py [-c or -h]"
     print "-c = test congestion"
-    print "-h = help"
+    print "-h = help\n"
 
 if __name__ == '__main__':
     # Tell mininet to print useful information
@@ -54,4 +54,4 @@ if __name__ == '__main__':
     else:
         help()
 
-    os.system("sudo mn -c")
+    os.system("rm -f *pyc")
