@@ -7,11 +7,10 @@ from mininet.node import CPULimitedHost
 from subprocess import os
 import sys
 import time
-from UtilTests_C import *
-from UtilTests_FE import *
+from UtilTests import *
 
 numHost_per_Switch = 3
-ops_link = dict(bw=1, delay='10ms',loss=0,  use_htb=False)
+ops_link = dict(bw=1, delay='10ms',loss=0)
 #ops_link_fiber = dict(bw=1, delay='10ms', loss=0 , use_htb=False)
 
 class MyTopo (Topo):
@@ -49,9 +48,10 @@ if __name__ == '__main__':
     if len(sys.argv)==2 and sys.argv[1] == '-c':
         CongestionTest()
     elif len(sys.argv)==2 and sys.argv[1] == '-f':
-        
         ForwardingErrorTest()
     elif len(sys.argv)==2 and sys.argv[1] == '-h':
         help()
     else:
         help()
+
+    os.system("sudo mn -c")
