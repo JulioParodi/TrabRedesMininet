@@ -1,14 +1,17 @@
 # TrabRedesMininet
 
+Autores:
+
 
 1- COMO USAR O PROGRAMA?
 
   Execute o arquivo python com o comando, em modo kernel:
-    sudo python Topology.py [-c ou -f ou -h]
+    sudo python Topology.py [-c ou -f ou -b ou -h]
 
   Escolha entre quais testes quer realizar:
     -c , para causar um congestionamento na rede e realizar os devidos testes para identificacao do problema
     -f , para causar um erro de encaminhamento e realizar os devidos testes para identificacao do problema
+    -b , para testes de avaliacao na largura de banda
     -h , impressao da ajuda no terminal
 
 2- TOPOLOGIA
@@ -46,7 +49,7 @@
       De host-5 para host-1 / loss = 60% packet loss
       De host-5 para host-2 / loss = 59% packet loss
       De host-5 para host-3 / loss = 70% packet loss
-      De host-5 para host-4 / loss = 11% packet loss
+      De host-5 para host-4 / loss = 8% packet loss
       De host-5 para host-5 / loss = 0% packet loss
       De host-5 para host-6 / loss = 12% packet loss
 
@@ -66,3 +69,5 @@
       De host-3 para host-6 / latencia = 120ms
 
     E visivel a demora do pacote chegar em host-1. Para o pacote chegar em host-2 que tem caminho equivalente a h-1 demora 70ms e para chegar nos hosts h-4,h-5,h-6 demora mais, pois esses estao em outro laboratorio
+
+  3.3 - Teste de largura de banda

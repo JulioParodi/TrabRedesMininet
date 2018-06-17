@@ -10,8 +10,8 @@ import time
 from UtilTests import *
 
 numHost_per_Switch = 3
-ops_link = dict(bw=1, delay='10ms',loss=0)
-#ops_link_fiber = dict(bw=1, delay='10ms', loss=0 , use_htb=False)
+ops_link = dict(bw=1, delay='5ms',loss=1)
+
 
 class MyTopo (Topo):
     def build(self, n=2):
@@ -35,8 +35,10 @@ class MyTopo (Topo):
 
 def help():
     print "use command line:"
-    print "sudo python Topology.py [-c or -h]"
+    print "sudo python Topology.py [-c or -f or -b or -h]"
     print "-c = test congestion"
+    print "-f = test forwarding error"
+    print "-b = test bandwidth"
     print "-h = help\n"
 
 if __name__ == '__main__':
@@ -49,6 +51,8 @@ if __name__ == '__main__':
         CongestionTest()
     elif len(sys.argv)==2 and sys.argv[1] == '-f':
         ForwardingErrorTest()
+    elif len(sys.argv)==2 and sys.argv[1] == '-b':
+        Bandwidth()
     elif len(sys.argv)==2 and sys.argv[1] == '-h':
         help()
     else:
