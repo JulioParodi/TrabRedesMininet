@@ -8,7 +8,7 @@ from subprocess import os
 import sys
 import time
 
-
+numHost_per_Switch = 3
 ops_link_cat5e = dict(bw=1, delay='10ms',loss=0,  use_htb=False)
 ops_link_fiber = dict(bw=1, delay='10ms', loss=0 , use_htb=False)
 class MyTopo (Topo):
@@ -20,15 +20,37 @@ class MyTopo (Topo):
         	host = self.addHost('h%s' % (h + 1))
         	self.addLink(host, switch, **ops_link_cat5e)
 
-	switch = self.addSwitch('s3')
+        switch = self.addSwitch('s3')
         # Python's range(N) generates 0..N-1
         for h in range(n):
             host = self.addHost('h%s' % (n + h + 1))
             self.addLink(host, switch, **ops_link_cat5e)
 
-	switch = self.addSwitch('s1')
-	self.addLink ('s1', 's2', **ops_link_fiber)
-	self.addLink ('s1', 's3', **ops_link_fiber)
+        switch = self.addSwitch('s1')
+        self.addLink ('s1', 's2', **ops_link_fiber)
+        self.addLink ('s1', 's3', **ops_link_fiber)
+        #host = self.addHost('h0')
+        #self.addLink(switch,host, **ops_link_fiber)
+def ping_allHost_to_ondeHost(hosts):
+    print "######------------ping allHosts -> h1 -------------------------"
+    for h in hosts:
+        if h.name != 'h1' and h.name != 'h2':
+            h.cmdPrint("ping 10.0.0.1 -v -c 3")
+            print "-------------------------------------"
+
+def ping_oneHost_to_allHosts(host):
+    print "\n\n\n########------------ping %s -> allHosts ----------##############" % (host.name)
+    for i in range(1,2*numHost_per_Switch+1):
+        #if i != 3:
+        host.cmdPrint("ping 10.0.0.%d -v -c 4" % (i))
+        print "-------------------------------------\n"
+
+def createCongest(server,client):
+    print "\n\n\n# Criando congestionamento"
+
+    server.sendCmd("iperf -s")
+    client.sendCmd("iperf -c 10.0.0.2 -t 200 ")
+    time.sleep(3)
 
 
 def MainTest():
@@ -37,38 +59,23 @@ def MainTest():
     os.system("clear")
     print "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
 
-    numHost_per_Switch = 3
     topo = MyTopo(n=numHost_per_Switch)
     net = Mininet(topo, link=TCLink,xterms=False)
 
     net.start()
     print "Dumping host connections"
     dumpNodeConnections(net.hosts)
-    print "\n\n\n"
-    print "#####Criando congestionamento"
     h1, h2 = net.get('h1','h2')
-    h2.sendCmd("iperf -s")
-    h1.sendCmd("iperf -c 10.0.0.2 -t 200 ")
-    time.sleep(2)
+    createCongest(h2,h1)
 
-    print "\n\n\n"
-
-    print "######------------ping allHosts -> h1 -------------------------"
+    print "\n# Inicio teste congestionamento"
     hosts = net.hosts
-    for h in hosts:
-        if h.name != 'h1' and h.name != 'h2':
-            h.cmdPrint("ping 10.0.0.1 -v -c 3")
-            print "-------------------------------------"
+    ping_allHost_to_ondeHost(hosts)
 
-    print "########------------ping h3 -> allHosts -------------------------"
-    h3 = net.get('h3')
-    for i in range(1,2*numHost_per_Switch+1):
-        print "%d"%(i)
-        if i != 3:
+    host = net.get('h3')
+    ping_oneHost_to_allHosts(host)
 
-            h3.cmdPrint("ping 10.0.0.%d -v -c 4"%(i))
 
-        print "-------------------------------------"
     h1.terminate()
     h2.terminate()
     net.stop()
