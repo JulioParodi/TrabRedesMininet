@@ -42,9 +42,9 @@ def CongestionTest():
     topo = MyTopo(n=numHost_per_Switch)
     net = Mininet(topo, link=TCLink,xterms=False)
     net.start()
-    print "Dumping host connections"
-    dumpNodeConnections(net.hosts)
-    print "# End of creation network "
+    #print "Dumping host connections"
+    #dumpNodeConnections(net.hosts)
+    #print "# End of creation network "
     h1, h2 = net.get('h1','h2')
     createCongest(h2,h1)
     print "\n# Start test congestion"
@@ -70,8 +70,9 @@ def ForwardingErrorTest():
     net.start()
     #print "Dumping host connections"
     #dumpNodeConnections(net.hosts)
+
     print "# End of creation network \n\n\n\n\n"
-    print "\n# Start test\n"
+    print "\n# Start test Forwarding Error\n"
     host = net.get('h3')
     hosts = net.hosts
     ping_oneHost_to_allHosts(host,hosts,8)
@@ -84,9 +85,10 @@ def Bandwidth():
     net = Mininet(topo, link=TCLink)
     net.start()
     h1, h2 = net.get('h1','h2')
+
     createCongest(h2,h1)
+
     print "\n# Start test congestion"
-    hosts = net.hosts
     hostTest = net.get('h3')
     hostIP = "10.0.0.1"
     print "# bw = %s Mb" % (ops_link['bw'])
@@ -103,9 +105,10 @@ def Bandwidth():
     net = Mininet(topo, link=TCLink)
     net.start()
     h1, h2 = net.get('h1','h2')
+
     createCongest(h2,h1)
+
     print "\n# Start test congestion"
-    hosts = net.hosts
     hostTest = net.get('h3')
     hostIP = "10.0.0.1"
     print "# bw = %s Mb" % (ops_link['bw'])
