@@ -39,7 +39,8 @@ def help():
     print "sudo python Topology.py [-c or -f or -b or -h]"
     print "-c = test congestion"
     print "-f = test forwarding error"
-    print "-b = test bandwidth"
+    print "-b1 = test bandwidth"
+    print "-b2 = test bandwidth with pathload"
     print "-h = help\n"
 
 if __name__ == '__main__':
