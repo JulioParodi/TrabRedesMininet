@@ -10,6 +10,7 @@ import time
 from UtilTests import *
 
 numHost_per_Switch = 3
+
 ops_link = dict(bw=1, delay='5ms',loss=1)
 
 
@@ -42,7 +43,6 @@ def help():
     print "-h = help\n"
 
 if __name__ == '__main__':
-    # Tell mininet to print useful information
     setLogLevel('info')
     os.system("sudo mn -c")
     os.system("clear")
@@ -51,8 +51,10 @@ if __name__ == '__main__':
         CongestionTest()
     elif len(sys.argv)==2 and sys.argv[1] == '-f':
         ForwardingErrorTest()
-    elif len(sys.argv)==2 and sys.argv[1] == '-b':
-        Bandwidth()
+    elif len(sys.argv)==2 and sys.argv[1] == '-b1':
+        Bandwidth1()
+    elif len(sys.argv)==2 and sys.argv[1] == '-b2':
+        Bandwidth2()
     elif len(sys.argv)==2 and sys.argv[1] == '-h':
         help()
     else:

@@ -24,7 +24,6 @@ def ping_oneHost_to_allHosts(host,hosts,numPacket=4):
 def ping_Host_to_Host(host1,hostIP,numPacket=4):
     setLogLevel('info')
     print "\n\n########------------ping %s -> %s ----------##############" % (host1.name,hostIP)
-    #print "# %s -> %s" % (host.name, h.name)
     host1.cmdPrint("ping %s -v -c %d" % (hostIP,numPacket))
     print "-------------------------------------\n"
     setLogLevel()
@@ -42,19 +41,16 @@ def CongestionTest():
     topo = MyTopo(n=numHost_per_Switch)
     net = Mininet(topo, link=TCLink,xterms=False)
     net.start()
-    #print "Dumping host connections"
-    #dumpNodeConnections(net.hosts)
-    #print "# End of creation network "
     h1, h2 = net.get('h1','h2')
     createCongest(h2,h1)
     print "\n# Start test congestion"
     hosts = net.hosts
     hostTest = net.get('h3')
     hostIP = "10.0.0.1"
+    
+    ping_oneHost_to_allHosts(hostTest, hosts)
 
     ping_allHost_to_oneHost(hosts,hostIP)
-
-    ping_oneHost_to_allHosts(hostTest, hosts)
 
     h1.terminate()
     h2.terminate()
@@ -78,7 +74,7 @@ def ForwardingErrorTest():
     ping_oneHost_to_allHosts(host,hosts,8)
     net.stop()
 
-def Bandwidth():
+def Bandwidth1():
     setLogLevel()
     print "================== FIRST TEST ====================================="
     topo = MyTopo(n=numHost_per_Switch)
@@ -115,4 +111,52 @@ def Bandwidth():
     ping_Host_to_Host(hostTest,hostIP)
     h1.terminate()
     h2.terminate()
+    net.stop()
+
+def Bandwidth2():
+    setLogLevel()
+
+    print "# bw = %s Mb" % (ops_link['bw'])
+    topo = MyTopo(n=numHost_per_Switch)
+    net = Mininet(topo, link=TCLink, xterms = False, cleanup = True, waitConnected = True)
+    net.start()
+    h_rcv, h_server = net.get('h1','h2')
+    h_test = net.get('h3')
+
+    setLogLevel('info')
+    print "================== TEST PATHLOAD ==================================="
+
+    h_test.sendCmd("./../../pathload_1.3.2/pathload_snd ")
+    h_rcv.cmdPrint("./../../pathload_1.3.2/pathload_rcv -s 10.0.0.3 -o test1.log ")
+
+
+    setLogLevel()
+
+    h_server.terminate()
+    h_rcv.terminate()
+    h_test.terminate()
+
+
+    os.system("sudo mn -c")
+    os.system("clear")
+
+
+    print "# bw = %s Mb" % (ops_link['bw'])
+    topo = MyTopo(n=numHost_per_Switch)
+    net = Mininet(topo, link=TCLink, xterms = False, cleanup = True, waitConnected = True)
+    net.start()
+    h_rcv, h_server = net.get('h1','h2')
+    h_test = net.get('h3')
+
+    setLogLevel('info')
+    print "\n==================  TEST PATHLOAD  ========CONGESTIONADO==========================="
+
+    h_test.sendCmd("./../../pathload_1.3.2/pathload_snd ")
+    h_server.sendCmd ("iperf -s")
+    h_rcv.cmdPrint("iperf -c 10.0.0.2 -t 200 >> iperftest1.txt & ./../../pathload_1.3.2/pathload_rcv -s 10.0.0.3 -o test1_c.log ")
+
+
+    h_server.terminate()
+    h_rcv.terminate()
+    h_test.terminate()
     net.stop()
